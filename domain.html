@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%235b4bff%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22bold%22%3ES%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+<title>SiteMix</title>
+</head>
+<body data-page="domain" data-title="nav_domain">
+<header id="site-header"></header>
+<main>
+<section class="page-head"><div class="container"><h1 data-i18n="d_title"></h1><p data-i18n="d_sub"></p></div></section>
+<section class="sec" style="padding-top:30px">
+  <div class="container guide">
+    <nav class="toc">
+      <a href="#g1">1. <span data-i18n="d_s1_t"></span></a>
+      <a href="#g2">2. <span data-i18n="d_s2_t"></span></a>
+      <a href="#g3">3. <span data-i18n="d_s3_t"></span></a>
+      <a href="#g4">4. <span data-i18n="d_s4_t"></span></a>
+      <a href="#g5">5. <span data-i18n="d_s5_t"></span></a>
+    </nav>
+    <div>
+      <div class="g-step" id="g1"><h2><span class="step-num">1</span><span data-i18n="d_s1_t"></span></h2><p data-i18n="d_s1_d"></p><ul><li data-i18n="d_s1_l1"></li><li data-i18n="d_s1_l2"></li><li data-i18n="d_s1_l3"></li></ul></div>
+      <div class="g-step" id="g2"><h2><span class="step-num">2</span><span data-i18n="d_s2_t"></span></h2><p data-i18n="d_s2_d"></p><p><code>my-shop.html</code> → <code>index.html</code></p></div>
+      <div class="g-step" id="g3"><h2><span class="step-num">3</span><span data-i18n="d_s3_t"></span></h2><p data-i18n="d_s3_d"></p>
+        <div class="hosts">
+          <div class="host"><h3>Cloudflare Pages</h3><p data-i18n="host_cf"></p></div>
+          <div class="host"><h3>Netlify</h3><p data-i18n="host_nf"></p></div>
+          <div class="host"><h3>Vercel</h3><p data-i18n="host_vc"></p></div>
+          <div class="host"><h3>VPS (Nginx)</h3><p data-i18n="host_vps"></p><p style="margin-top:8px"><code>/var/www/html/index.html</code> · <code>certbot --nginx</code></p></div>
+        </div>
+      </div>
+      <div class="g-step" id="g4"><h2><span class="step-num">4</span><span data-i18n="d_s4_t"></span></h2><p data-i18n="d_s4_d"></p>
+        <table class="dns"><thead><tr><th data-i18n="d_type"></th><th data-i18n="d_name"></th><th data-i18n="d_value"></th><th data-i18n="d_when"></th></tr></thead>
+        <tbody>
+          <tr><td><code>CNAME</code></td><td><code>www</code></td><td><code>your-site.pages.dev</code> / <code>your-site.netlify.app</code> / <code>cname.vercel-dns.com</code></td><td data-i18n="d_cname_when"></td></tr>
+          <tr><td><code>A</code></td><td><code>@</code></td><td><code>203.0.113.10</code></td><td data-i18n="d_a_when"></td></tr>
+        </tbody></table>
+        <p class="muted" data-i18n="d_s4_note"></p>
+      </div>
+      <div class="g-step" id="g5"><h2><span class="step-num">5</span><span data-i18n="d_s5_t"></span></h2><p data-i18n="d_s5_d"></p></div>
+      <div class="note" data-i18n="d_note"></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>

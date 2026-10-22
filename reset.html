@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%235b4bff%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22bold%22%3ES%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="login" data-title="rs_title">
+<header id="site-header"></header>
+<main class="auth-wrap">
+  <div class="auth-card">
+    <h1 data-i18n="rs_title"></h1>
+    <p data-i18n="rs_sub"></p>
+    <form class="auth-form" id="rs-form" novalidate>
+      <input name="password" type="password" autocomplete="new-password" required minlength="8" data-i18n-ph="au_password">
+      <button class="btn block" type="submit" data-i18n="rs_btn"></button>
+    </form>
+    <div class="auth-msg" id="auth-msg" role="status" style="margin-top:14px"></div>
+  </div>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+document.addEventListener('sm:ready', function () {
+  var f = document.getElementById('rs-form'), m = document.getElementById('auth-msg'), tok = new URLSearchParams(location.search).get('token') || '';
+  function show(k, key) { m.className = 'auth-msg on ' + k; m.textContent = SM.t(key); }
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (f.password.value.length < 8) return show('err', 'au_err_pw');
+    SMAPI.post('/api/auth/reset', { token: tok, password: f.password.value }).then(function () { show('ok', 'rs_ok'); setTimeout(function () { location.href = 'account.html'; }, 800); },
+      function (er) { show('err', er.code === 'weak_password' ? 'au_err_pw' : 'rs_bad'); });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%235b4bff%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22bold%22%3ES%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+<title>SiteMix</title>
+</head>
+<body data-page="templates" data-title="nav_templates">
+<header id="site-header"></header>
+<main>
+<section class="page-head"><div class="container"><h1 data-i18n="gal_title"></h1><p data-i18n="gal_sub"></p></div></section>
+<section class="sec" style="padding-top:20px">
+  <div class="container">
+    <div class="gal-tools">
+      <input type="search" id="gal-search" class="gal-search" data-i18n-ph="gal_search" aria-label="search">
+      <div class="seg" id="gal-kind"><button type="button" class="on" data-kind="">🖥️+📱</button><button type="button" data-kind="d">🖥️ <span data-i18n="gal_desktop"></span></button><button type="button" data-kind="m">📱 <span data-i18n="gal_mobile"></span></button></div>
+      <label class="sig-only"><input type="checkbox" id="gal-sig"> ★ <span data-i18n="gal_sig_only"></span></label>
+    </div>
+    <div class="gal-filters"><div class="filters" id="filters"></div><div class="filters" id="sfilters"></div></div>
+    <div id="sec-d"><div class="gal-sub"><h2>🖥️ <span data-i18n="gal_desktop"></span></h2><small class="muted"><span id="cnt-d"></span> · <span data-i18n="gal_hint"></span></small></div>
+    <div class="gal-grid" id="gal-desktop"></div>
+    <div class="gal-more"><button type="button" class="btn ghost" id="more-d" data-i18n="gal_more"></button></div></div>
+    <div id="sec-m"><div class="gal-sub"><h2>📱 <span data-i18n="gal_mobile"></span></h2><small class="muted" id="cnt-m"></small></div>
+    <div class="gal-grid mobile" id="gal-mobile"></div>
+    <div class="gal-more"><button type="button" class="btn ghost" id="more-m" data-i18n="gal_more"></button></div></div>
+    <p class="muted gal-none" id="gal-none" data-i18n="gal_none" hidden></p>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/plugins.js"></script>
+<script src="assets/js/langs-world.js"></script>
+<script src="assets/js/templates.js"></script>
+<script>
+document.addEventListener('sm:ready', function () {
+  var T = SM_TPL, st = { cat: '', style: '', q: '', kind: '', sig: false }, PAGE = { d: 24, m: 24 }, shown = { d: 24, m: 24 };
+  var qs = new URLSearchParams(location.search); if (qs.get('cat') && T.CATS.indexOf(qs.get('cat')) >= 0) st.cat = qs.get('cat'); if (qs.get('q')) st.q = qs.get('q');
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target._load(); io.unobserve(e.target); } }); }, { rootMargin: '300px' });
+  function catName(c) { return SM.t('cat_' + c); }
+  function hay(t) { return (t.name + ' ' + t.id + ' ' + t.cat + ' ' + t.style + ' ' + catName(t.cat) + ' ' + SM.t('st_' + t.style)).toLowerCase(); }
+  function match(t) {
+    if (st.cat && t.cat !== st.cat) return false; if (st.style && t.style !== st.style) return false; if (st.sig && t.gen) return false;
+    if (st.q) { var h = hay(t); return st.q.toLowerCase().split(/\s+/).filter(Boolean).every(function (w) { return h.indexOf(w) >= 0; }); }
+    return true;
+  }
+  function card(t, kind) {
+    var W = kind === 'd' ? 1280 : 390, H = kind === 'd' ? 860 : 760;
+    var el = document.createElement('div'); el.className = 'tpl'; el.dataset.id = t.id;
+    el.innerHTML = '<div class="tpl-thumb" style="aspect-ratio:' + W + '/' + H + '"></div><div class="tpl-body"><div><b>' + SM_TPL.esc(t.name) + (t.gen ? '' : ' <span class="ptag sig">★ ' + SM.t('gal_signature') + '</span>') + '</b><small>' + SM_TPL.esc(catName(t.cat)) + ' · ' + SM_TPL.esc(SM.t('st_' + t.style)) + '</small></div>' +
+      '<a class="btn sm" href="builder.html?' + (kind === 'd' ? 'd' : 'm') + '=' + t.id + '&cat=' + t.cat + '">' + SM.t('gal_use') + '</a></div>';
+    var th = el.querySelector('.tpl-thumb');
+    el._load = function () {
+      if (el._f) return;
+      var f = document.createElement('iframe'); f.setAttribute('tabindex', '-1'); f.setAttribute('loading', 'lazy'); f.title = t.name;
+      f.style.width = W + 'px'; f.style.height = H + 'px'; th.appendChild(f); el._f = f;
+      var fit = function () { f.style.transform = 'scale(' + (th.clientWidth / W) + ')'; }; fit(); window.addEventListener('resize', fit);
+      var S = T.sampleState(t.cat, SM.getLang()); S.plugins.cookie = false; S.plugins.announce = false; S.primary = t.sw;
+      if (kind === 'd') S.desktop = t.id; else S.mobile = t.id;
+      f.srcdoc = T.generateSite(S, { preview: true });
+    };
+    io.observe(el);
+    return el;
+  }
+  function renderKind(kind) {
+    var list = (kind === 'd' ? T.DESKTOP : T.MOBILE).filter(match), grid = document.getElementById(kind === 'd' ? 'gal-desktop' : 'gal-mobile');
+    grid.innerHTML = ''; var n = Math.min(shown[kind], list.length);
+    for (var i = 0; i < n; i++) grid.appendChild(card(list[i], kind));
+    document.getElementById('cnt-' + kind).textContent = SM.t('gal_showing', { n: n, total: list.length });
+    document.getElementById('more-' + kind).hidden = n >= list.length;
+    document.getElementById('sec-' + kind).hidden = (st.kind && st.kind !== kind) || !list.length;
+    return list.length;
+  }
+  function render() {
+    var a = renderKind('d'), b = renderKind('m');
+    var vis = (!st.kind || st.kind === 'd' ? a : 0) + (!st.kind || st.kind === 'm' ? b : 0);
+    document.getElementById('gal-none').hidden = vis > 0;
+    document.querySelectorAll('#filters .chip').forEach(function (c) { c.classList.toggle('on', c.dataset.cat === st.cat); });
+    document.querySelectorAll('#sfilters .chip').forEach(function (c) { c.classList.toggle('on', c.dataset.style === st.style); });
+    document.querySelectorAll('#gal-kind button').forEach(function (c) { c.classList.toggle('on', c.dataset.kind === st.kind); });
+  }
+  function reset() { shown.d = PAGE.d; shown.m = PAGE.m; render(); }
+  var fl = document.getElementById('filters'), sf = document.getElementById('sfilters');
+  fl.innerHTML = '<button class="chip on" data-cat="" data-i18n="gal_all"></button>' + T.CATS.map(function (c) { return '<button class="chip" data-cat="' + c + '" data-i18n="cat_' + c + '"></button>'; }).join('');
+  sf.innerHTML = '<button class="chip on" data-style="" data-i18n="gal_all_styles"></button>' + T.STYLES.map(function (c) { return '<button class="chip" data-style="' + c + '" data-i18n="st_' + c + '"></button>'; }).join('');
+  fl.addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (!b) return; st.cat = b.dataset.cat; reset(); });
+  sf.addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (!b) return; st.style = b.dataset.style; reset(); });
+  document.getElementById('gal-kind').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; st.kind = b.dataset.kind; reset(); });
+  document.getElementById('gal-sig').addEventListener('change', function (e) { st.sig = e.target.checked; reset(); });
+  var srch = document.getElementById('gal-search'), tm; srch.value = st.q;
+  srch.addEventListener('input', function () { clearTimeout(tm); tm = setTimeout(function () { st.q = srch.value.trim(); reset(); }, 180); });
+  document.getElementById('more-d').onclick = function () { shown.d += PAGE.d; render(); };
+  document.getElementById('more-m').onclick = function () { shown.m += PAGE.m; render(); };
+  SM.apply(document.querySelector('main')); render();
+  document.addEventListener('sm:lang', function () { SM.apply(document.querySelector('main')); render(); });
+});
+</script>
+</body>
+</html>
